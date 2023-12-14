@@ -1,3 +1,12 @@
+# ALL Credits Goes TO 
+- RexShack
+- killswitch3k
+- Sadicius
+- TeToKaZ
+I only Updated and Improved a few Parts of this Script  mostly Edited the Mining Part.
+This Version of rsg-mining just Improves Needs for my Server.
+- https://github.com/RetryR1v2
+
 # RexshackGaming
 - discord : https://discord.gg/s5uSk56B65
 - github : https://github.com/Rexshack-RedM
