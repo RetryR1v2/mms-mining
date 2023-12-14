@@ -89,7 +89,7 @@ AddEventHandler('mms-mining:server:givestone', function()
             local amount = math.random(2, 3)
             Player.Functions.AddItem('copper_ore', amount)
             TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['copper_ore'], "add")
-        elseif randomitem == 4 then
+        elseif randomitem == 5 then
             local amount = math.random(2, 3)
             Player.Functions.AddItem('steel_ore', amount)
             TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['steel_ore'], "add")
@@ -110,8 +110,8 @@ AddEventHandler('mms-mining:server:givestone', function()
             TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['emerald'], "add")
         elseif randomrareitem == 4 then
             local amount = math.random(1, 2)
-            Player.Functions.AddItem('goldore',  amount)
-            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['goldore'], "add")
+            Player.Functions.AddItem('mediumnugget',  amount)
+            TriggerClientEvent("inventory:client:ItemBox", src, RSGCore.Shared.Items['mediumnugget'], "add")
         end
     end
 end)

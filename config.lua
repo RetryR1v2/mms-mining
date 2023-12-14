@@ -189,7 +189,7 @@ Config.RareAward = {
     'diamond', --- 3te stufe
     'ruby',      --- 3te stufe
     'emerald',    --- 3te stufe
-    'goldore',    --- 3te stufe
+    'mediumnugget',    --- 3te stufe
     'silver_ore', --- 2te stufe
 }
 
