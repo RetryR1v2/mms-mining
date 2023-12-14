@@ -1,3 +1,9 @@
+# This Script is Edited by Markus Mueller
+- github : https://github.com/RetryR1v2
+- Special Thanks to RexShack, killswitch3k, Sadicius, TeToKaZ for Creating this Script.
+- I only Updated the Mining Part Added some Server Code Making Mining Efficiency Better Changed Pickaxe breaking to End of Mining.
+- Thanks to All Creators of this Script to making this Possible
+
 # RexshackGaming
 - discord : https://discord.gg/s5uSk56B65
 - github : https://github.com/Rexshack-RedM
