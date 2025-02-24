@@ -64,7 +64,7 @@ RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem
         end
     else
     --- Always Item Part so no Empty swing
-    if CurrentMine.LuckyItem.LuckyItems then
+    if CurrentMine.AlwaysItem.AlwaysGetItem then
         local CanCarryItem = exports.vorp_inventory:canCarryItem(src, CurrentMine.AlwaysItem.AlwaysItemName, CurrentMine.AlwaysItem.AlwaysItemAmount)
         if CanCarryItem then
             exports.vorp_inventory:addItem(src, CurrentMine.AlwaysItem.AlwaysItemName, CurrentMine.AlwaysItem.AlwaysItemAmount)
