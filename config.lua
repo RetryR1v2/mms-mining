@@ -39,11 +39,11 @@ Config.Mines = {
         ForceMoveAfterMine = true, -- if true you need to move before can mine Again.
         ForceMoveDistance = 3, -- Move 3 Meters to Mine Again.
         AlwaysItem = { AlwaysGetItem = true, AlwaysItemName = 'rock', AlwaysItemLabel = 'Stein', AlwaysItemAmount = 4 },
-        LuckyItem = { LuckyItems = true, LuckyChance = 6 }, -- 1 = 10% , 2 = 20% ....
-        LuckyItemsTable = {
-            { Item = 'coal', Label = 'Kohle', Amount = 4 },
-            { Item = 'salt', Label = 'Salz', Amount = 4 },
-            { Item = 'rock', Label = 'Stein', Amount = 4 },
+        LuckyItem = true,
+        LuckyItemsTable = { -- As Higher the Chance as Lower you get the item Chance 1 is 100%  
+            { Item = 'coal', Label = 'Kohle', Amount = 4, Chance = 12 }, -- Its Between 1 and 20 5% Steps If you set it 20 its really Rare Chance to Get the item
+            { Item = 'salt', Label = 'Salz', Amount = 4, Chance = 6 },
+            { Item = 'rock', Label = 'Stein', Amount = 4, Chance = 17 },
         },
         JobMultiplier = true,
         JobBonus = {

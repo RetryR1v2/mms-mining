@@ -43,12 +43,20 @@ RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem
             end
         end
         --- Lucky Bonus Item Part
-        if CurrentMine.LuckyItem.LuckyItems then
-            local Chance = math.random(1,10)
-            if Chance <= CurrentMine.LuckyItem.LuckyChance then
-                local MaxIndex = #CurrentMine.LuckyItemsTable
+        if CurrentMine.LuckyItem then
+            local Chance = math.random(1,20)
+	        local RewardItems = {}
+
+            for h, Item in pairs(CurrentMine.LuckyItemsTable) do
+                if Item.Chance <= Chance then
+                    table.insert(RewardItems, Item)
+                end
+            end
+
+            if #RewardItems ~= nil then
+                local MaxIndex = #RewardItems
                 local RandomIndex = math.random(1,MaxIndex)
-                local PickedItem = CurrentMine.LuckyItemsTable[RandomIndex]
+                local PickedItem = RewardItems[RandomIndex]
                 local Round = math.floor(PickedItem.Amount * Multiplier)
                 local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, Round)
                 if CanCarryItem then
@@ -77,12 +85,20 @@ RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem
         end
     end
     --- Lucky Bonus Item Part
-    if CurrentMine.LuckyItem.LuckyItems then
-        local Chance = math.random(1,10)
-        if Chance <= CurrentMine.LuckyItem.LuckyChance then
-            local MaxIndex = #CurrentMine.LuckyItemsTable
+    if CurrentMine.LuckyItem then
+        local Chance = math.random(1,20)
+	        local RewardItems = {}
+            
+            for h, Item in pairs(CurrentMine.LuckyItemsTable) do
+                if Item.Chance <= Chance then
+                    table.insert(RewardItems, Item)
+                end
+            end
+
+            if #RewardItems ~= nil then
+            local MaxIndex = #RewardItems
             local RandomIndex = math.random(1,MaxIndex)
-            local PickedItem = CurrentMine.LuckyItemsTable[RandomIndex]
+            local PickedItem = RewardItems[RandomIndex]
             local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, PickedItem.Amount)
             if CanCarryItem then
                 exports.vorp_inventory:addItem(src, PickedItem.Item, PickedItem.Amount)

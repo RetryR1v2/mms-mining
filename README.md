@@ -22,6 +22,8 @@
 
 - 1.1.0 Initial Release Version
 - 1.1.1 Fixed Minor Bug with Always Items
+- 1.1.2 Added Chance System.
+- Changed Config. Need to Update All Files!!!
 
 # installation 
 
