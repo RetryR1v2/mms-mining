@@ -47,6 +47,18 @@ AddEventHandler('mms-mining:client:UpdateItemId',function(NewToolId)
     ToolId = NewToolId
 end)
 
+-- RepairTool
+
+RegisterNetEvent('mms-mining:client:RepairTool')
+AddEventHandler('mms-mining:client:RepairTool',function()
+    if Toolout then
+        TriggerServerEvent('mms-mining:server:RepairTool',ToolId,CurrentItemMaxUses)
+        Progressbar(Config.RepairTime * 1000 ,_U('RepairingTool'))
+    else
+        VORPcore.NotifyTip(_U('NoToolInHand'),5000)
+    end
+end)
+
 -- Main Thred
 
 Citizen.CreateThread(function ()

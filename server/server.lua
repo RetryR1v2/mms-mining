@@ -17,6 +17,60 @@ exports.vorp_inventory:registerUsableItem(Config.MiningItem2, function(data)
     TriggerClientEvent('mms-mining:client:ToolOut',src,ItemId,UsedItem,MaxUses)
 end)
 
+exports.vorp_inventory:registerUsableItem(Config.RepairItem, function(data)
+    local src = data.source
+    local ItemCount = data.item.count
+    if ItemCount >= Config.RepairItemUsage then
+        exports.vorp_inventory:subItem(src,Config.RepairItem, Config.RepairItemUsage)
+        TriggerClientEvent('mms-mining:client:RepairTool',src)
+    else
+        VORPcore.NotifyTip(src,_U('NoRepairItem'),5000)
+    end
+end)
+
+RegisterServerEvent('mms-mining:server:RepairTool',function(ToolId,CurrentItemMaxUses)
+    local src = source
+
+    if Config.LatestVORPInvetory then
+        local ItemData = exports.vorp_inventory:getItemById(src, ToolId)
+        if ItemData.metadata.lumberdurability ~= nil then
+            local NewDurability = ItemData.metadata.lumberdurability + Config.RepairAmount
+            if NewDurability >= CurrentItemMaxUses then
+                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. CurrentItemMaxUses, lumberdurability =  CurrentItemMaxUses }, 1, nil)
+                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. CurrentItemMaxUses, lumberdurability =  CurrentItemMaxUses })
+                local NewToolId = NewItemID.id
+                TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
+            else
+                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability }, 1, nil)
+                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability })
+                local NewToolId = NewItemID.id
+                TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
+            end
+        else
+            VORPcore.NotifyTip(src,_U('ToolIsNew'),5000)
+        end
+    else
+        local ItemData = exports.vorp_inventory:getItemByMainId(src, ToolId)
+        if ItemData.metadata.lumberdurability ~= nil then
+            local NewDurability = ItemData.metadata.lumberdurability + Config.RepairAmount
+            if NewDurability >= CurrentItemMaxUses then
+                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. CurrentItemMaxUses, lumberdurability =  CurrentItemMaxUses }, 1, nil)
+                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. CurrentItemMaxUses, lumberdurability =  CurrentItemMaxUses })
+                local NewToolId = NewItemID.id
+                TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
+            else
+                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability }, 1, nil)
+                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability })
+                local NewToolId = NewItemID.id
+                TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
+            end
+        else
+            VORPcore.NotifyTip(src,_U('ToolIsNew'),5000)
+        end
+    end
+end)
+
+
 RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem,CurrentItemMaxUses,CurrentMine)
     local src = source
     local Character = VORPcore.getUser(src).getUsedCharacter

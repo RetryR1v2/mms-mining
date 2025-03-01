@@ -28,6 +28,13 @@ Config.ItemMaxUses2 = 250 -- Max Durability
 Config.MineTime = 3500  -- Time in MS 5000 = 5 Sec
 Config.ToolHash = 'p_pickaxe01x' -- Pickaxe Model
 
+-- Repair Sytem 
+
+Config.RepairItem = 'rock' -- Item To Repair the Tool
+Config.RepairItemUsage = 1 -- 1 Item Needed to Repair
+Config.RepairAmount = 150 -- How Much Durability Should be added.
+Config.RepairTime = 5 -- Time in Sec
+Config.CanMoreThenMaxUses = true
 
 Config.Mines = {
     {

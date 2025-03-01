@@ -24,6 +24,7 @@
 - 1.1.1 Fixed Minor Bug with Always Items
 - 1.1.2 Added Chance System.
 - Changed Config. Need to Update All Files!!!
+- 1.1.3 Added Repair Tool Function
 
 # installation 
 
