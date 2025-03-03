@@ -25,6 +25,7 @@
 - 1.1.2 Added Chance System.
 - Changed Config. Need to Update All Files!!!
 - 1.1.3 Added Repair Tool Function
+- 1.1.4 BugFix
 
 # installation 
 
