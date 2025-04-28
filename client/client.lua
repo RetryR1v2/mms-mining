@@ -90,7 +90,7 @@ while true do
                         Wait(200)
                         local CurrentMine = Config.Mines[h]
                         LastMinedCoords = GetEntityCoords(PlayerPedId())
-                        TriggerEvent('mms-mining:client:DoMining',ToolId,CurrentMine)
+                        TriggerServerEvent('mms-mining:server:CheckForTool',ToolId,CurrentMine)
                     end
                 end
             else
@@ -98,10 +98,9 @@ while true do
                     MiningPromptGroup:ShowGroup(v.MineName)
                         
                     if DoMining:HasCompleted() then
-                        Wait(200)
+                        Wait(200) -- DL
                         local CurrentMine = Config.Mines[h]
-                        DistanceLast = GetEntityCoords(PlayerPedId())
-                        TriggerEvent('mms-mining:client:DoMining',ToolId,CurrentMine)
+                        TriggerServerEvent('mms-mining:server:CheckForTool',ToolId,CurrentMine)
                     end
                 end
             end
@@ -121,23 +120,31 @@ AddEventHandler('mms-mining:client:DoMining',function(ToolId,CurrentMine)
     TriggerServerEvent('mms-mining:server:FinishMining',ToolId,CurrentItem,CurrentItemMaxUses,CurrentMine)
 end)
 
---- Refresh Them
-
+-- Check Player Status
 Citizen.CreateThread(function()
-    while not ChoppedlumberProps do
+    local MyPed = PlayerPedId()
+    while true do
         Citizen.Wait(5000)
-        if ChoppedlumberProps then
-            while true do
-                Citizen.Wait(Config.ResetMiningTimer * 60000)
-                for i, v in ipairs(Choppedlumber) do  -- Tabelle leeren
-                    Choppedlumber[i] = nil
-                    ChoppedlumberProps = false
-                end
+        if Toolout then
+            CanDoWork = CanWork(MyPed)
+            if not CanDoWork then
+                TriggerEvent('mms-mining:client:ToolOut')
             end
         end
     end
 end)
 
+function CanWork (MyPed)
+    local Dead = IsPedDeadOrDying(MyPed)
+    local OnHorse = IsPedOnMount(MyPed)
+    local OnWagon = IsPedOnVehicle(MyPed)
+    local InWater = IsPedSwimmingUnderWater(MyPed)
+    if not Dead and not OnHorse and not OnWagon and not InWater then
+        return true
+    else
+        return false
+    end
+end
 
 ----------------- Utilities -----------------
 

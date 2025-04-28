@@ -109,18 +109,20 @@ RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem
 
             if #RewardItems ~= nil then
                 local MaxIndex = #RewardItems
-                local RandomIndex = math.random(1,MaxIndex)
-                local PickedItem = RewardItems[RandomIndex]
-                local Round = math.floor(PickedItem.Amount * Multiplier)
-                local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, Round)
-                if CanCarryItem then
-                    exports.vorp_inventory:addItem(src, PickedItem.Item, Round)
-                    VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. Round .. ' ' .. PickedItem.Label,5000)
-                if Config.WebHook  then
-                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. Round .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
-                end
-                else
-                    VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. Round .. ' ' .. PickedItem.Label,5000)
+                if MaxIndex > 0 then
+                    local RandomIndex = math.random(1,MaxIndex)
+                    local PickedItem = RewardItems[RandomIndex]
+                    local Round = math.floor(PickedItem.Amount * Multiplier)
+                    local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, Round)
+                    if CanCarryItem then
+                        exports.vorp_inventory:addItem(src, PickedItem.Item, Round)
+                        VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. Round .. ' ' .. PickedItem.Label,5000)
+                    if Config.WebHook  then
+                        VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. Round .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                    end
+                    else
+                        VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. Round .. ' ' .. PickedItem.Label,5000)
+                    end
                 end
             end
         end
@@ -143,23 +145,23 @@ RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem
         local Chance = math.random(1,20)
 	        local RewardItems = {}
             
-            for h, Item in pairs(CurrentMine.LuckyItemsTable) do
-                if Item.Chance <= Chance then
-                    table.insert(RewardItems, Item)
-                end
+        for h, Item in pairs(CurrentMine.LuckyItemsTable) do
+            if Item.Chance <= Chance then
+                table.insert(RewardItems, Item)
             end
+        end
 
-            if #RewardItems ~= nil then
-            local MaxIndex = #RewardItems
-            local RandomIndex = math.random(1,MaxIndex)
-            local PickedItem = RewardItems[RandomIndex]
-            local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, PickedItem.Amount)
+        if #RewardItems ~= nil then
+        local MaxIndex = #RewardItems
+        local RandomIndex = math.random(1,MaxIndex)
+        local PickedItem = RewardItems[RandomIndex]
+        local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, PickedItem.Amount)
             if CanCarryItem then
                 exports.vorp_inventory:addItem(src, PickedItem.Item, PickedItem.Amount)
                 VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. PickedItem.Amount .. ' ' .. PickedItem.Label,5000)
-            if Config.WebHook  then
-                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. PickedItem.Amount .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
-            end
+                if Config.WebHook  then
+                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. PickedItem.Amount .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                end
             else
                 VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. PickedItem.Amount .. ' ' .. PickedItem.Label,5000)
             end
@@ -210,6 +212,27 @@ end
             local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, lumberdurability =  Durability })
             local NewToolId = NewItemID.id
             TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
+        end
+    end
+end)
+
+RegisterServerEvent('mms-mining:server:CheckForTool',function(ToolId,CurrentMine)
+    local src = source
+    if Config.LatestVORPInvetory then
+        local GetItem = exports.vorp_inventory:getItemById(src,ToolId)
+        if GetItem ~= nil then
+            TriggerClientEvent('mms-mining:client:DoMining',src,ToolId,CurrentMine)
+        else
+            VORPcore.NotifyRightTip(src,_U('YouHaveNoToolInPocket'),5000)
+            TriggerClientEvent('mms-mining:client:ToolOut',src)
+        end
+    else
+        local GetItem = exports.vorp_inventory:getItemByMainId(src,ToolId)
+        if GetItem ~= nil then
+            TriggerClientEvent('mms-mining:client:DoMining',src,ToolId,CurrentMine)
+        else
+            VORPcore.NotifyRightTip(src,_U('YouHaveNoToolInPocket'),5000)
+            TriggerClientEvent('mms-mining:client:ToolOut',src)
         end
     end
 end)

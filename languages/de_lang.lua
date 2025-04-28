@@ -8,4 +8,6 @@ Locales["de_lang"] = {
     YouGotLuck = 'Du hast Glück und bekommst zusätzlich: ',
     WHGotLucky = ' bekommt durch Glück: ',
     ToolBroken = 'Dein Werkzeug ist Kaputt',
+    --NEW
+    YouHaveNoToolInPocket = 'Du hast kein Werkzeug',s
 }
