@@ -29,6 +29,7 @@ AddEventHandler('mms-mining:client:ToolOut',function(ItemId,UsedItem,MaxUses)
         Citizen.InvokeNative(0x3A50753042B6891B, MyPed, "PITCH_FORKS")
         LastMinedCoords = GetEntityCoords(PlayerPedId())
         Toolout = true
+        TriggerEvent('mms-mining:client:CheckCanWork')
     elseif Toolout then
         Wait(500)
         DeleteObject(Tool)
@@ -121,12 +122,12 @@ AddEventHandler('mms-mining:client:DoMining',function(ToolId,CurrentMine)
 end)
 
 -- Check Player Status
-Citizen.CreateThread(function()
-    local MyPed = PlayerPedId()
-    while true do
+RegisterNetEvent('mms-mining:client:CheckCanWork')
+AddEventHandler('mms-mining:client:CheckCanWork',function()
+    while Toolout do
         Citizen.Wait(5000)
         if Toolout then
-            CanDoWork = CanWork(MyPed)
+            CanDoWork = CanWork()
             if not CanDoWork then
                 TriggerEvent('mms-mining:client:ToolOut')
             end
@@ -135,6 +136,7 @@ Citizen.CreateThread(function()
 end)
 
 function CanWork (MyPed)
+    local MyPed = PlayerPedId()
     local Dead = IsPedDeadOrDying(MyPed)
     local OnHorse = IsPedOnMount(MyPed)
     local OnWagon = IsPedOnVehicle(MyPed)
