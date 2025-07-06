@@ -64,7 +64,7 @@ end)
 
 Citizen.CreateThread(function ()
     local MiningPromptGroup = BccUtils.Prompts:SetupPromptGroup()
-    local DoMining = MiningPromptGroup:RegisterPrompt(_U('Mining'), 0x760A9C6F, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'})
+    local DoMining = MiningPromptGroup:RegisterPrompt(_U('Mining'), 0x760A9C6F, 1, 1, true, 'click') --, {timedeventhash = 'MEDIUM_TIMED_EVENT'})
 
     -- Create MiningBlips
     for h,v in ipairs(Config.Mines) do
@@ -116,8 +116,10 @@ RegisterNetEvent('mms-mining:client:DoMining')
 AddEventHandler('mms-mining:client:DoMining',function(ToolId,CurrentMine)
     Citizen.Wait(100)
     local MyPed = PlayerPedId()
+    FreezeEntityPosition(MyPed,true)
     Anim(MyPed, 'amb_work@world_human_pickaxe_new@working@male_a@trans', 'pre_swing_trans_after_swing', -1, 0)
     Progressbar(Config.MineTime,_U('WorkingHere'))
+    FreezeEntityPosition(MyPed,false)
     TriggerServerEvent('mms-mining:server:FinishMining',ToolId,CurrentItem,CurrentItemMaxUses,CurrentMine)
 end)
 

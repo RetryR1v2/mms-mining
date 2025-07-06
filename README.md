@@ -27,6 +27,7 @@
 - 1.1.3 Added Repair Tool Function
 - 1.1.4 BugFix
 - 1.1.5 BugFixes
+- 1.1.6 Improved Mining Mechanics
 
 # installation 
 
