@@ -28,6 +28,7 @@
 - 1.1.4 BugFix
 - 1.1.5 BugFixes
 - 1.1.6 Improved Mining Mechanics
+- 1.1.7 Fixed Bug where it takes Durability if you dont get items.
 
 # installation 
 

@@ -77,6 +77,8 @@ RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem
     local Name = Character.firstname .. ' ' .. Character.lastname
     local Multiplier = 1
     local job = Character.job
+    local CanCarryItems = false
+    local CanCarryItems2 = false
     for h,v in ipairs(CurrentMine.JobBonus) do
         if v.Job == job then
             Multiplier = v.Multiplier
@@ -87,6 +89,7 @@ RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem
             local Round = math.floor(CurrentMine.AlwaysItem.AlwaysItemAmount * Multiplier)
             local CanCarryItem = exports.vorp_inventory:canCarryItem(src, CurrentMine.AlwaysItem.AlwaysItemName, Round)
             if CanCarryItem then
+                CanCarryItems = true
                 exports.vorp_inventory:addItem(src, CurrentMine.AlwaysItem.AlwaysItemName, Round)
                 VORPcore.NotifyRightTip(src,_U('YouGot') .. Round .. ' ' .. CurrentMine.AlwaysItem.AlwaysItemLabel,5000)
                 if Config.WebHook  then
@@ -115,11 +118,12 @@ RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem
                     local Round = math.floor(PickedItem.Amount * Multiplier)
                     local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, Round)
                     if CanCarryItem then
+                        CanCarryItems2 = true
                         exports.vorp_inventory:addItem(src, PickedItem.Item, Round)
                         VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. Round .. ' ' .. PickedItem.Label,5000)
-                    if Config.WebHook  then
-                        VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. Round .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
-                    end
+                        if Config.WebHook  then
+                            VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. Round .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                        end
                     else
                         VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. Round .. ' ' .. PickedItem.Label,5000)
                     end
@@ -127,91 +131,95 @@ RegisterServerEvent('mms-mining:server:FinishMining',function(ToolId,CurrentItem
             end
         end
     else
-    --- Always Item Part so no Empty swing
-    if CurrentMine.AlwaysItem.AlwaysGetItem then
-        local CanCarryItem = exports.vorp_inventory:canCarryItem(src, CurrentMine.AlwaysItem.AlwaysItemName, CurrentMine.AlwaysItem.AlwaysItemAmount)
-        if CanCarryItem then
-            exports.vorp_inventory:addItem(src, CurrentMine.AlwaysItem.AlwaysItemName, CurrentMine.AlwaysItem.AlwaysItemAmount)
-            VORPcore.NotifyRightTip(src,_U('YouGot') .. CurrentMine.AlwaysItem.AlwaysItemAmount .. ' ' .. CurrentMine.AlwaysItem.AlwaysItemLabel,5000)
-            if Config.WebHook  then
-                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGot') .. CurrentMine.AlwaysItem.AlwaysItemAmount .. ' ' .. CurrentMine.AlwaysItem.AlwaysItemLabel, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
-            end
-        else
-            VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. CurrentMine.AlwaysItem.AlwaysItemAmount .. ' ' .. CurrentMine.AlwaysItem.AlwaysItemLabel,5000)
-        end
-    end
-    --- Lucky Bonus Item Part
-    if CurrentMine.LuckyItem then
-        local Chance = math.random(1,20)
-	        local RewardItems = {}
-            
-        for h, Item in pairs(CurrentMine.LuckyItemsTable) do
-            if Item.Chance <= Chance then
-                table.insert(RewardItems, Item)
-            end
-        end
-
-        if #RewardItems ~= nil then
-        local MaxIndex = #RewardItems
-        local RandomIndex = math.random(1,MaxIndex)
-        local PickedItem = RewardItems[RandomIndex]
-        local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, PickedItem.Amount)
+        --- Always Item Part so no Empty swing
+        if CurrentMine.AlwaysItem.AlwaysGetItem then
+            local CanCarryItem = exports.vorp_inventory:canCarryItem(src, CurrentMine.AlwaysItem.AlwaysItemName, CurrentMine.AlwaysItem.AlwaysItemAmount)
             if CanCarryItem then
-                exports.vorp_inventory:addItem(src, PickedItem.Item, PickedItem.Amount)
-                VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. PickedItem.Amount .. ' ' .. PickedItem.Label,5000)
+                CanCarryItems = true
+                exports.vorp_inventory:addItem(src, CurrentMine.AlwaysItem.AlwaysItemName, CurrentMine.AlwaysItem.AlwaysItemAmount)
+                VORPcore.NotifyRightTip(src,_U('YouGot') .. CurrentMine.AlwaysItem.AlwaysItemAmount .. ' ' .. CurrentMine.AlwaysItem.AlwaysItemLabel,5000)
                 if Config.WebHook  then
-                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. PickedItem.Amount .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGot') .. CurrentMine.AlwaysItem.AlwaysItemAmount .. ' ' .. CurrentMine.AlwaysItem.AlwaysItemLabel, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
                 end
             else
-                VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. PickedItem.Amount .. ' ' .. PickedItem.Label,5000)
+                VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. CurrentMine.AlwaysItem.AlwaysItemAmount .. ' ' .. CurrentMine.AlwaysItem.AlwaysItemLabel,5000)
+            end
+        end
+        --- Lucky Bonus Item Part
+        if CurrentMine.LuckyItem then
+            local Chance = math.random(1,20)
+                local RewardItems = {}
+                
+            for h, Item in pairs(CurrentMine.LuckyItemsTable) do
+                if Item.Chance <= Chance then
+                    table.insert(RewardItems, Item)
+                end
+            end
+
+            if #RewardItems ~= nil then
+            local MaxIndex = #RewardItems
+            local RandomIndex = math.random(1,MaxIndex)
+            local PickedItem = RewardItems[RandomIndex]
+            local CanCarryItem = exports.vorp_inventory:canCarryItem(src, PickedItem.Item, PickedItem.Amount)
+                if CanCarryItem then
+                    CanCarryItems2 = true
+                    exports.vorp_inventory:addItem(src, PickedItem.Item, PickedItem.Amount)
+                    VORPcore.NotifyRightTip(src,_U('YouGotLuck') .. PickedItem.Amount .. ' ' .. PickedItem.Label,5000)
+                    if Config.WebHook  then
+                        VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Name .. _U('WHGotLucky') .. PickedItem.Amount .. ' ' .. PickedItem.Label, Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                    end
+                else
+                    VORPcore.NotifyRightTip(src,_U('NoMoreInventorySpaceFor') .. PickedItem.Amount .. ' ' .. PickedItem.Label,5000)
+                end
             end
         end
     end
-end
+    if CanCarryItems or CanCarryItems2 then
     --- Remove Tool / Tool Durability
-    if Config.LatestVORPInvetory then
-        local ItemData = exports.vorp_inventory:getItemById(src, ToolId)
-        if ItemData ~= nil and ItemData.metadata.lumberdurability ~= nil then
-            local NewDurability = ItemData.metadata.lumberdurability - Config.ItemUsage
-            if NewDurability < Config.ItemUsage then
-                exports.vorp_inventory:subItemById(src, ToolId,nil,nil,1)
-                TriggerClientEvent('mms-mining:client:ToolOut',src,ToolId)
-                VORPcore.NotifyRightTip(src,_U('ToolBroken'),5000)
+        if Config.LatestVORPInvetory then
+            local ItemData = exports.vorp_inventory:getItemById(src, ToolId)
+            if ItemData ~= nil and ItemData.metadata.lumberdurability ~= nil then
+                local NewDurability = ItemData.metadata.lumberdurability - Config.ItemUsage
+                if NewDurability < Config.ItemUsage then
+                    exports.vorp_inventory:subItemById(src, ToolId,nil,nil,1)
+                    TriggerClientEvent('mms-mining:client:ToolOut',src,ToolId)
+                    VORPcore.NotifyRightTip(src,_U('ToolBroken'),5000)
+                else
+                    exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability }, 1, nil)
+                    local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability })
+                    local NewToolId = NewItemID.id
+                    TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
+                end
             else
-                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability }, 1, nil)
-                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability })
+                local Durability = CurrentItemMaxUses - Config.ItemUsage
+                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. Durability, lumberdurability =  Durability }, 1, nil)
+                Citizen.Wait(150)
+                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, lumberdurability =  Durability })
                 local NewToolId = NewItemID.id
                 TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
             end
         else
-            local Durability = CurrentItemMaxUses - Config.ItemUsage
-            exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. Durability, lumberdurability =  Durability }, 1, nil)
-            Citizen.Wait(150)
-            local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, lumberdurability =  Durability })
-            local NewToolId = NewItemID.id
-            TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
-        end
-    else
-        local ItemData = exports.vorp_inventory:getItemByMainId(src, ToolId)
-        if ItemData ~= nil and ItemData.metadata.lumberdurability ~= nil then
-            local NewDurability = ItemData.metadata.lumberdurability - Config.ItemUsage
-            if NewDurability < Config.ItemUsage then
-                exports.vorp_inventory:subItemID(src, ToolId)
-                TriggerClientEvent('mms-mining:client:ToolOut',src,ToolId)
-                VORPcore.NotifyRightTip(src,_U('ToolBroken'),5000)
+            local ItemData = exports.vorp_inventory:getItemByMainId(src, ToolId)
+            if ItemData ~= nil and ItemData.metadata.lumberdurability ~= nil then
+                local NewDurability = ItemData.metadata.lumberdurability - Config.ItemUsage
+                if NewDurability < Config.ItemUsage then
+                    exports.vorp_inventory:subItemID(src, ToolId)
+                    TriggerClientEvent('mms-mining:client:ToolOut',src,ToolId)
+                    VORPcore.NotifyRightTip(src,_U('ToolBroken'),5000)
+                else
+                    exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability }, 1, nil)
+                    local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability })
+                    local NewToolId = NewItemID.id
+                    TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
+                end
             else
-                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability }, 1, nil)
-                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. NewDurability, lumberdurability =  NewDurability })
+                local Durability = CurrentItemMaxUses - Config.ItemUsage
+                exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. Durability, lumberdurability =  Durability }, 1, nil)
+                Citizen.Wait(150)
+                local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, lumberdurability =  Durability })
                 local NewToolId = NewItemID.id
                 TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
             end
-        else
-            local Durability = CurrentItemMaxUses - Config.ItemUsage
-            exports.vorp_inventory:setItemMetadata(src, ToolId, { description = _U('Durability') .. Durability, lumberdurability =  Durability }, 1, nil)
-            Citizen.Wait(150)
-            local NewItemID = exports.vorp_inventory:getItem(src, CurrentItem,nil, { description = _U('Durability') .. Durability, lumberdurability =  Durability })
-            local NewToolId = NewItemID.id
-            TriggerClientEvent('mms-mining:client:UpdateItemId',src,NewToolId)
         end
     end
 end)
