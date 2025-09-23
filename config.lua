@@ -43,7 +43,7 @@ Config.Mines = {
         CreateBlip = true,
         BlipSprite = 'blip_ambient_hitching_post',
         MineRadius = 50,
-        ForceMoveAfterMine = true, -- if true you need to move before can mine Again.
+        ForceMoveAfterMine = false, -- if true you need to move before can mine Again.
         ForceMoveDistance = 3, -- Move 3 Meters to Mine Again.
         AlwaysItem = { AlwaysGetItem = true, AlwaysItemName = 'rock', AlwaysItemLabel = 'Stein', AlwaysItemAmount = 4 },
         LuckyItem = true,

@@ -9,6 +9,7 @@ local ToolId = nil
 local CurrentItem = nil
 local CurrentItemMaxUses = nil
 local LastMinedCoords = nil
+local Working = false
 
 -- Axe out
 
@@ -84,7 +85,7 @@ while true do
             local Distance = #(MyCoords - v.MinePosition)
             local DistanceLast = #(MyCoords - LastMinedCoords)
             if v.ForceMoveAfterMine then
-                if Distance < v.MineRadius and DistanceLast >= v.ForceMoveDistance then
+                if Distance < v.MineRadius and DistanceLast >= v.ForceMoveDistance and not Working then
                     MiningPromptGroup:ShowGroup(v.MineName)
                         
                     if DoMining:HasCompleted() then
@@ -95,7 +96,7 @@ while true do
                     end
                 end
             else
-                if Distance < v.MineRadius then
+                if Distance < v.MineRadius and not Working then
                     MiningPromptGroup:ShowGroup(v.MineName)
                         
                     if DoMining:HasCompleted() then
@@ -114,6 +115,7 @@ end)
 
 RegisterNetEvent('mms-mining:client:DoMining')
 AddEventHandler('mms-mining:client:DoMining',function(ToolId,CurrentMine)
+    Working = true
     Citizen.Wait(100)
     local MyPed = PlayerPedId()
     FreezeEntityPosition(MyPed,true)
@@ -121,6 +123,8 @@ AddEventHandler('mms-mining:client:DoMining',function(ToolId,CurrentMine)
     Progressbar(Config.MineTime,_U('WorkingHere'))
     FreezeEntityPosition(MyPed,false)
     TriggerServerEvent('mms-mining:server:FinishMining',ToolId,CurrentItem,CurrentItemMaxUses,CurrentMine)
+    Citizen.Wait(500)
+    Working = false
 end)
 
 -- Check Player Status
