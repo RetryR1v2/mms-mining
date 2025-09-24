@@ -28,6 +28,9 @@ Config.ItemMaxUses2 = 250 -- Max Durability
 Config.MineTime = 3500  -- Time in MS 5000 = 5 Sec
 Config.ToolHash = 'p_pickaxe01x' -- Pickaxe Model
 
+-- Head gear toggle (helmet + projector), positions are fixed in client
+Config.UseHelmet = true
+
 -- Repair Sytem 
 
 Config.RepairItem = 'rock' -- Item To Repair the Tool
@@ -60,4 +63,3 @@ Config.Mines = {
         },
     },
 }
-

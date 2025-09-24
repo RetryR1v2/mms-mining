@@ -10,7 +10,8 @@ local CurrentItem = nil
 local CurrentItemMaxUses = nil
 local LastMinedCoords = nil
 local Working = false
-
+local helmet = nil
+local projector = nil
 -- Axe out
 
 RegisterNetEvent('mms-mining:client:ToolOut')
@@ -21,8 +22,20 @@ AddEventHandler('mms-mining:client:ToolOut',function(ItemId,UsedItem,MaxUses)
     MyPed = PlayerPedId()
     if not Toolout then
         Wait(500)
+        -- ensure unarmed, create and attach pickaxe
+        SetCurrentPedWeapon(MyPed, `WEAPON_UNARMED`, true)
         Tool = CreateObject(Config.ToolHash, GetOffsetFromEntityInWorldCoords(MyPed, 0.0, 0.0, 0.0), true, true, true)
         AttachEntityToEntity(Tool, MyPed, GetPedBoneIndex(MyPed, 7966), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 2, 1, 0, 0)
+        -- Attach mining helmet + projector to head bone (fixed positions), gated by Config.UseHelmet
+        if Config.UseHelmet then
+            local boneIndex = GetEntityBoneIndexByName(MyPed, "HairScale_B")
+            -- Helmet
+            helmet = CreateObject(joaat("s_hat_miner01x"), GetEntityCoords(MyPed), true, true, true)
+            AttachEntityToEntity(helmet, MyPed, boneIndex, 0.0, -0.03, 0.01, -9.0, 4.0, 0.0, true, true, false, true, 1, true)
+            -- Projector
+            projector = CreateObject(joaat("s_movieprojection01x"), GetEntityCoords(MyPed), true, true, true)
+            AttachEntityToEntity(projector, MyPed, boneIndex, 0.00999999999999, -0.070, 0.09, -80.0, 16.0, 4.0, true, true, false, true, 1, true)
+        end
         --Citizen.InvokeNative(0x923583741DC87BCE, MyPed, 'arthur_healthy')
         Citizen.InvokeNative(0x89F5E7ADECCCB49C, MyPed, "carry_pitchfork")
         Citizen.InvokeNative(0x2208438012482A1A, MyPed, true, true)
@@ -33,7 +46,21 @@ AddEventHandler('mms-mining:client:ToolOut',function(ItemId,UsedItem,MaxUses)
         TriggerEvent('mms-mining:client:CheckCanWork')
     elseif Toolout then
         Wait(500)
-        DeleteObject(Tool)
+        -- remove pickaxe
+        if Tool and DoesEntityExist(Tool) then
+            DeleteObject(Tool)
+            Tool = nil
+        end
+        -- remove helmet
+        if helmet and DoesEntityExist(helmet) then
+            DeleteEntity(helmet)
+            helmet = nil
+        end
+        -- remove projector
+        if projector and DoesEntityExist(projector) then
+            DeleteEntity(projector)
+            projector = nil
+        end
         --Citizen.InvokeNative(0x923583741DC87BCE, MyPed, 'arthur_healthy')
         Citizen.InvokeNative(0x2208438012482A1A, MyPed, false, false)
         Citizen.InvokeNative(0x58F7DB5BD8FA2288, PlayerPedId())
@@ -163,6 +190,21 @@ RegisterNetEvent('onResourceStop',function(resource)
     for _, blips in ipairs(MineBlips) do
         blips:Remove()
 	end
+    -- clean up attached objects and reset state
+    if Tool and DoesEntityExist(Tool) then
+        DeleteObject(Tool)
+        Tool = nil
+    end
+    if helmet and DoesEntityExist(helmet) then
+        DeleteEntity(helmet)
+        helmet = nil
+    end
+    if projector and DoesEntityExist(projector) then
+        DeleteEntity(projector)
+        projector = nil
+    end
+    Citizen.InvokeNative(0x2208438012482A1A, PlayerPedId(), false, false)
+    ClearPedTasks(PlayerPedId())
 end
 end)
 
