@@ -30,6 +30,10 @@
 - 1.1.6 Improved Mining Mechanics
 - 1.1.7 Fixed Bug where it takes Durability if you dont get items.
 - 1.1.8 Added Exploit Protection ( Cant Spam G Anymore )
+- 1.1.9 Merged Pull Request from ISeeYouCopy
+- You now Have Helmet with Projector
+- Added Entity Check before attaching Props.
+- Added romanian Laguage
 
 # installation 
 
