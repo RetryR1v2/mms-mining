@@ -34,6 +34,9 @@
 - You now Have Helmet with Projector
 - Added Entity Check before attaching Props.
 - Added romanian Laguage
+- 1.2.0 Fixed Mining Animation
+- Changed Distance Check now Checks Z Value so you can lower the mines to the Underground
+- Just lower coord z in Config
 
 # installation 
 

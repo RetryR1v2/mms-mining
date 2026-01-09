@@ -109,8 +109,8 @@ while true do
         Citizen.Wait(3)
         for h,v in ipairs(Config.Mines) do
             local MyCoords = GetEntityCoords(PlayerPedId())
-            local Distance = #(MyCoords - v.MinePosition)
-            local DistanceLast = #(MyCoords - LastMinedCoords)
+            local Distance = GetDistanceBetweenCoords(MyCoords.x,MyCoords.y,MyCoords.z,v.MinePosition.x,v.MinePosition.y,v.MinePosition.z,true)
+            local DistanceLast = GetDistanceBetweenCoords(MyCoords.x,MyCoords.y,MyCoords.z,LastMinedCoords.x,LastMinedCoords.y,LastMinedCoords.z,true)
             if v.ForceMoveAfterMine then
                 if Distance < v.MineRadius and DistanceLast >= v.ForceMoveDistance and not Working then
                     MiningPromptGroup:ShowGroup(v.MineName)
@@ -138,7 +138,7 @@ while true do
 end
 end)
 
--- Getting lumber
+-- Mining
 
 RegisterNetEvent('mms-mining:client:DoMining')
 AddEventHandler('mms-mining:client:DoMining',function(ToolId,CurrentMine)
@@ -146,12 +146,32 @@ AddEventHandler('mms-mining:client:DoMining',function(ToolId,CurrentMine)
     Citizen.Wait(100)
     local MyPed = PlayerPedId()
     FreezeEntityPosition(MyPed,true)
-    Anim(MyPed, 'amb_work@world_human_pickaxe_new@working@male_a@trans', 'pre_swing_trans_after_swing', -1, 0)
+    TriggerEvent('mms-mining:client:MiningAnimation',MyPed)
     Progressbar(Config.MineTime,_U('WorkingHere'))
     FreezeEntityPosition(MyPed,false)
     TriggerServerEvent('mms-mining:server:FinishMining',ToolId,CurrentItem,CurrentItemMaxUses,CurrentMine)
-    Citizen.Wait(500)
     Working = false
+end)
+
+RegisterNetEvent('mms-mining:client:MiningAnimation',function(MyPed)
+    ClearPedTasksImmediately(MyPed)
+    local dict1 = "amb_work@world_human_pickaxe_new@working@male_a@trans"
+    local anim1 = "pre_swing_trans_after_swing"
+        
+    RequestAnimDict(dict1)
+    while not HasAnimDictLoaded(dict1) do Wait(10) end
+    while Working do
+        TaskPlayAnim(MyPed, dict1, anim1, 4.0, -4.0, -1, 1, 0, true, 0, false, 0, false)
+        local duration1 = GetAnimDuration(dict1, anim1)
+        Wait(math.floor(duration1 * 1000 * 0.8))
+
+            if not Working then
+                break
+            end
+
+    end
+
+    RemoveAnimDict(dict1)
 end)
 
 -- Check Player Status
